@@ -1,5 +1,5 @@
 import { Body, Controller, BadRequestException, NotFoundException, Post, Get, Delete, Patch, Param } from '@nestjs/common';
-// import { Role } from './user.entity';
+import { CreateAuthUserDto } from '../auth/dto/auth-user.dto';
 import { UserService } from './user.service';
 
 @Controller('users')
@@ -7,7 +7,7 @@ export class UserController {
     constructor(private readonly userService: UserService) { }
 
     @Post()
-    async signUp(@Body() body: object) {
+    async signUp(@Body() body: CreateAuthUserDto) {
         try {
             return await this.userService.createUser(body)
         } catch (error) {
@@ -35,7 +35,7 @@ export class UserController {
     }
 
     @Patch(':id')
-    async updateUser(@Param('id') id: number, @Body() body: object) {
+    async updateUser(@Param('id') id: number, @Body() body: CreateAuthUserDto) {
         try {
             return this.userService.updateUser(id, body)
         } catch (error) {

@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typedEnv } from './utils/type-env';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [UserModule,
@@ -16,7 +17,8 @@ import { typedEnv } from './utils/type-env';
       database: typedEnv.DB_NAME,
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
-    })],
+    }),
+    AuthModule],
   controllers: [AppController],
   providers: [AppService],
 })
