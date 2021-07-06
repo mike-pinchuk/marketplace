@@ -1,7 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, BaseEntity } from "typeorm";
 
 export enum Role {
-    UnregisteredUser = 'unregisteredUser',
     RegisteredUser = 'registeredUser',
     Moderator = 'moderator',
     Support = 'support',
@@ -24,7 +23,7 @@ export class User extends BaseEntity {
     @Column({ nullable: false, unique: true, name: 'phone_number' })
     phoneNumber!: string;
 
-    @Column({ name: 'role', select: true, nullable: false, type: 'varchar', default: Role.UnregisteredUser })
+    @Column({ name: 'role', select: true, nullable: false, type: 'varchar', default: Role.RegisteredUser })
     role!: Role;
 
     @Column({ name: 'ad_id' })
