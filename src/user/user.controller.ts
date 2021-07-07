@@ -9,7 +9,7 @@ export class UserController {
     @Post()
     async signUp(@Body() body: CreateAuthUserDto) {
         try {
-            return await this.userService.createUser(body)
+            return await this.userService.createUser(body.name, body.email, body.password, body.phoneNumber, body.role)
         } catch (error) {
             throw new BadRequestException('USER WITH THIS EMAIL OR PHONE NUMBER HAS ALREADY EXISTED')
         }

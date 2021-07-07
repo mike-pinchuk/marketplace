@@ -1,4 +1,5 @@
 import { IsEmail, IsNotEmpty, IsString } from "class-validator";
+import {Role} from '../../user/user.entity';
 
 export class CreateAuthUserDto {
     @IsNotEmpty()
@@ -20,5 +21,5 @@ export class CreateAuthUserDto {
 
     @IsNotEmpty()
     @IsString()
-    readonly role!: string;
+    readonly role!: Role;
 }

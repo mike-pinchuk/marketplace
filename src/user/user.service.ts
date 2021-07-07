@@ -2,14 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { Repository } from 'typeorm';
+import { hashGenerator } from '../utils/index';
+import { Role } from './user.entity';
 
 
 @Injectable()
 export class UserService {
     constructor(@InjectRepository(User) private userRepository: Repository<User>) { }
 
-    async createUser(dto: object) {
-        return this.userRepository.save(dto)
+    async createUser(name: string, email: string, password: string, phoneNumber: string, role: Role) {
+        return this.userRepository.save({ name, email, password: hashGenerator(password), phoneNumber, role })
     }
 
     async getUserById(id: number) {
