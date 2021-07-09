@@ -11,12 +11,12 @@ export class AuthController {
     @Post('signup')
     async signUp(@Body() signUpDto: CreateAuthUserDto) {
         const existUser = await this.userService.findByEmailWithHideField(signUpDto.email);
-        
+
         if (existUser !== undefined) {
             throw new BadRequestException('ERROR: USER WITH THIS EMAIL EXIST');
         }
         const user = await this.userService.createUser(signUpDto.name, signUpDto.email, signUpDto.password, signUpDto.phoneNumber, signUpDto.role);
-        
+
         return this.authService.createToken(user.id);
     }
 
@@ -27,9 +27,10 @@ export class AuthController {
             if (!user || user.passwordHash !== hashGenerator(signUpDto.password)) {
                 throw new NotFoundException('ERROR: CREDENTIAL IS NOT VALID')
             }
+            return this.authService.createToken(user.id);
         } catch (error) {
             throw new Error(error)
         }
-       
+
     }
 }
