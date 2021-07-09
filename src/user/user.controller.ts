@@ -11,7 +11,7 @@ export class UserController {
         try {
             return await this.userService.createUser(body.name, body.email, body.password, body.phoneNumber, body.role)
         } catch (error) {
-            throw new BadRequestException('USER WITH THIS EMAIL OR PHONE NUMBER HAS ALREADY EXISTED')
+            throw new BadRequestException(error.message)
         }
     }
 
@@ -20,7 +20,7 @@ export class UserController {
         try {
             return await this.userService.getUserById(id);
         } catch (error) {
-           throw new NotFoundException('USER WITH THIS ID IS NOT EXISTED')
+            throw new NotFoundException('USER WITH THIS ID IS NOT EXISTED')
         }
     }
 

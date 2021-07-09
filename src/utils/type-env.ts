@@ -9,6 +9,10 @@ const requiredEnvs = {
     DB_NAME: Joi.string().required()
 };
 
+const secretCodeEnv = {
+    JWT_SECRET_KEY: Joi.string().required(),
+}
+
 const optionsEnvs = {
     NODE_ENV: Joi.string()
         .valid('local', 'development', 'production', 'string')
@@ -20,6 +24,7 @@ const optionsEnvs = {
 const envs = {
     ...requiredEnvs,
     ...optionsEnvs,
+    ...secretCodeEnv,
 };
 
 const validateAndReturnTypedEnv = () => {
@@ -29,7 +34,7 @@ const validateAndReturnTypedEnv = () => {
     keys.forEach((key) => {
         globalEnvs[key] = process.env[key];
     });
-    const { error, value } = Joi.object(requiredEnvs).concat(Joi.object(optionsEnvs))
+    const { error, value } = Joi.object(requiredEnvs).concat(Joi.object(optionsEnvs)).concat(Joi.object(secretCodeEnv))
         .validate(globalEnvs, { allowUnknown: false, abortEarly: true });
     if (error) {
         throw new Error(error.message);

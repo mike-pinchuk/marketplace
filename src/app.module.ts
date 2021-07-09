@@ -7,8 +7,7 @@ import { typedEnv } from './utils/type-env';
 import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [UserModule,
-    TypeOrmModule.forRoot({
+  imports: [TypeOrmModule.forRoot({
       type: "postgres",
       host: typedEnv.DB_HOST,
       port: typedEnv.DB_PORT,
@@ -18,7 +17,7 @@ import { AuthModule } from './auth/auth.module';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
-    AuthModule],
+    AuthModule, UserModule],
   controllers: [AppController],
   providers: [AppService],
 })
