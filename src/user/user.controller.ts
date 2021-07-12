@@ -1,4 +1,4 @@
-import { Body, Controller, BadRequestException, UseGuards, NotFoundException, Post, Get, Delete, Patch, Param, Request } from '@nestjs/common';
+import { Body, Controller, UseGuards, NotFoundException, Get, Delete, Patch, Param, Request } from '@nestjs/common';
 import { CreateAuthUserDto } from '../auth/dto/auth-user.dto';
 import { UserService } from './user.service';
 import { AuthorizedRequest } from '../utils/types';
@@ -8,15 +8,6 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 @Controller('users')
 export class UserController {
     constructor(private readonly userService: UserService) { }
-
-    @Post()
-    async signUp(@Body() body: CreateAuthUserDto) {
-        try {
-            return await this.userService.createUser(body.name, body.email, body.password, body.phoneNumber, body.role)
-        } catch (error) {
-            throw new BadRequestException(error.message)
-        }
-    }
 
     @Get('me')
     async getProfile(@Request() req: AuthorizedRequest) {
