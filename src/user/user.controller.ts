@@ -1,17 +1,20 @@
-import { Body, Controller, BadRequestException, NotFoundException, Post, Get, Delete, Patch, Param } from '@nestjs/common';
-// import { Role } from './user.entity';
+import { Body, Controller, UseGuards, NotFoundException, Get, Delete, Patch, Param, Request } from '@nestjs/common';
+import { CreateAuthUserDto } from '../auth/dto/auth-user.dto';
 import { UserService } from './user.service';
+import { AuthorizedRequest } from '../utils/types';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
+@UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UserController {
     constructor(private readonly userService: UserService) { }
 
-    @Post()
-    async signUp(@Body() body: object) {
+    @Get('me')
+    async getProfile(@Request() req: AuthorizedRequest) {
         try {
-            return await this.userService.createUser(body)
+            return this.userService.getUserById(req.user.id);
         } catch (error) {
-            throw new BadRequestException('USER WITH THIS EMAIL OR PHONE NUMBER HAS ALREADY EXISTED')
+            throw new NotFoundException('PROFILE NOT FOUND');
         }
     }
 
@@ -20,7 +23,7 @@ export class UserController {
         try {
             return await this.userService.getUserById(id);
         } catch (error) {
-           throw new NotFoundException('USER WITH THIS ID IS NOT EXISTED')
+            throw new NotFoundException('USER WITH THIS ID IS NOT EXISTED')
         }
     }
 
@@ -35,7 +38,7 @@ export class UserController {
     }
 
     @Patch(':id')
-    async updateUser(@Param('id') id: number, @Body() body: object) {
+    async updateUser(@Param('id') id: number, @Body() body: CreateAuthUserDto) {
         try {
             return this.userService.updateUser(id, body)
         } catch (error) {

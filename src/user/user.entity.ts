@@ -17,8 +17,8 @@ export class User extends BaseEntity {
     @Column({ nullable: false, unique: true })
     email!: string;
 
-    @Column({ nullable: false, select: false })
-    password!: string;
+    @Column({ nullable: false, select: false, name: 'password_hash'})
+    passwordHash!: string;
 
     @Column({ nullable: false, unique: true, name: 'phone_number' })
     phoneNumber!: string;
@@ -26,8 +26,8 @@ export class User extends BaseEntity {
     @Column({ name: 'role', select: true, nullable: false, type: 'varchar', default: Role.RegisteredUser })
     role!: Role;
 
-    @Column({ name: 'ad_id' })
-    adId!: number;
+    @Column({ name: 'ad_id', nullable: true,})
+    adId?: number;
 
     @CreateDateColumn({ name: 'created_at' })
     createdAt!: Date;

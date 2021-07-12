@@ -1,0 +1,11 @@
+import { Injectable } from '@nestjs/common';
+import { typedEnv } from '../utils/type-env';
+import * as jwt from 'jsonwebtoken';
+
+@Injectable()
+export class AuthService {
+    createToken(userId: number): object {
+        const token = jwt.sign({ id: userId }, typedEnv.JWT_SECRET_KEY, { expiresIn: '2h'})
+        return { token }
+    }
+}

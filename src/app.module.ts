@@ -4,10 +4,10 @@ import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typedEnv } from './utils/type-env';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [UserModule,
-    TypeOrmModule.forRoot({
+  imports: [TypeOrmModule.forRoot({
       type: "postgres",
       host: typedEnv.DB_HOST,
       port: typedEnv.DB_PORT,
@@ -16,7 +16,8 @@ import { typedEnv } from './utils/type-env';
       database: typedEnv.DB_NAME,
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
-    })],
+    }),
+    AuthModule, UserModule],
   controllers: [AppController],
   providers: [AppService],
 })
