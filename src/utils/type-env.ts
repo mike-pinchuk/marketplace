@@ -10,7 +10,8 @@ const requiredEnvs = {
 };
 
 const secretCodeEnv = {
-    JWT_SECRET_KEY: Joi.string().required(),
+    JWT_ACCESS_KEY: Joi.string().required(),
+    JWT_REFRESH_KEY: Joi.string().required(),
 }
 
 const optionsEnvs = {

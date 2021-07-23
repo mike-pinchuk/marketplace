@@ -4,6 +4,7 @@ import { User } from './user.entity';
 import { Repository } from 'typeorm';
 import { hashGenerator } from '../utils/index';
 import { Role } from './user.entity';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class UserService {
@@ -41,5 +42,29 @@ export class UserService {
           .where('user.email = :email', { email })
           .getOne();
         return result;
+    }
+
+    async setCurrentRefreshToken(refreshToken: object, userId: number) {
+        const { token }: any = refreshToken;
+        await this.userRepository.update(userId, {currentHashedToken: hashGenerator(token)})
+    }
+
+    async getUserIfRefreshTokenMatches(refreshTokenFromCookie: string | undefined, userId: number) {
+        const user = await this.getUserById(userId);
+
+        if(!refreshTokenFromCookie) {
+            return `Credential was wrong`
+        }
+        const hashedRefreshTokenFromCookie: string = hashGenerator(refreshTokenFromCookie)
+        const { currentHashedToken }: any = user;
+        const isRefreshTokenMatching = await crypto.timingSafeEqual(Buffer.from(hashedRefreshTokenFromCookie), Buffer.from(currentHashedToken))
+        if(isRefreshTokenMatching) {
+            return user;
+        }
+        return `Credential was wrong`
+    }
+
+    async removeRefreshToken(userId: number) {
+        return await this.userRepository.update({id: userId}, { currentHashedToken: '' })
     }
 }

@@ -1,4 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, BaseEntity } from "typeorm";
+import { Exclude } from 'class-transformer';
+
 
 export enum Role {
     RegisteredUser = 'registeredUser',
@@ -18,6 +20,7 @@ export class User extends BaseEntity {
     email!: string;
 
     @Column({ nullable: false, select: false, name: 'password_hash'})
+    @Exclude()
     passwordHash!: string;
 
     @Column({ nullable: false, unique: true, name: 'phone_number' })
@@ -28,6 +31,10 @@ export class User extends BaseEntity {
 
     @Column({ name: 'ad_id', nullable: true,})
     adId?: number;
+
+    @Column({ nullable: true, name: 'current_hashed_token', default: null })
+    @Exclude()
+    currentHashedToken?: string;
 
     @CreateDateColumn({ name: 'created_at' })
     createdAt!: Date;
