@@ -14,15 +14,24 @@ export class AuthController {
     constructor(private readonly authService: AuthService, private readonly userService: UserService) { }
 
     @Post('signup')
-    async signUp(@Body() signUpDto: CreateAuthUserDto) {
-        const existUser = await this.userService.findByEmailWithHideField(signUpDto.email);
+    async signUp(@Body() signUpDto: CreateAuthUserDto, @Req() request: RequestWithUser) {
+        try {
+            const existUser = await this.userService.findByEmailWithHideField(signUpDto.email);
 
         if (existUser !== undefined) {
             throw new BadRequestException('ERROR: USER WITH THIS EMAIL EXIST');
         }
         const user = await this.userService.createUser(signUpDto.name, signUpDto.email, signUpDto.password, signUpDto.phoneNumber, signUpDto.role);
-
+        const refreshToken = await this.authService.createRefreshToken(user.id)
+        await this.userService.setCurrentRefreshToken(refreshToken, user.id)
         return this.authService.createAccessToken(user.id);
+        const { cookie }: any = refreshToken;
+        request.res?.setHeader('Set-Cookie', [cookie])
+        } catch (error) {
+            throw new BadRequestException('ERROR: USER WITH THIS EMAIL OR PHONE NUMBER EXIST')
+        }
+       
+        
     }
 
     @Post('signin')
@@ -40,7 +49,6 @@ export class AuthController {
             return {
                 user, 
                 accessToken,
-                refreshToken
             }
         } catch (error) {
             throw new Error(error)

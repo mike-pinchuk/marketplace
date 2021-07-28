@@ -32,10 +32,6 @@ export class User extends BaseEntity {
     @Column({ name: 'ad_id', nullable: true,})
     adId?: number;
 
-    @Column({ nullable: true, name: 'current_hashed_token', default: null })
-    @Exclude()
-    currentHashedToken?: string;
-
     @CreateDateColumn({ name: 'created_at' })
     createdAt!: Date;
 

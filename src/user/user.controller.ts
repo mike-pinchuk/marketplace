@@ -3,11 +3,12 @@ import { CreateAuthUserDto } from '../auth/dto/auth-user.dto';
 import { UserService } from './user.service';
 import { AuthorizedRequest } from '../utils/types';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { RedisService } from 'src/redis/redis.service';
 
 @UseGuards(JwtAuthGuard)
 @Controller('users')
 export class UserController {
-    constructor(private readonly userService: UserService) { }
+    constructor(private readonly userService: UserService, private readonly redisService: RedisService) { }
 
     @Get('me')
     async getProfile(@Request() req: AuthorizedRequest) {
@@ -21,7 +22,9 @@ export class UserController {
     @Get(':id')
     async getUser(@Param('id') id: number) {
         try {
-            return await this.userService.getUserById(id);
+            const user = await this.userService.getUserById(id);
+            const token = await this.redisService.getTokenFromRedis(id.toString())
+            return {user, token}
         } catch (error) {
             throw new NotFoundException('USER WITH THIS ID IS NOT EXISTED')
         }
