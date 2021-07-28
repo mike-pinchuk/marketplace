@@ -11,3 +11,18 @@ services:
             POSTGRES_USER: postgres
         ports: 
             - 5434:5432
+    redis:
+        container_name: redis_store
+        image: "redis:alpine"
+        restart: always
+        ports:
+            - 6379:6379
+
+    redis-commander:
+        image: rediscommander/redis-commander:latest
+        environment:
+            - REDIS_HOSTS=local:redis:6379
+        ports:
+            - "8081:8081"
+        depends_on:
+            - redis

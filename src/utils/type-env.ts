@@ -6,11 +6,17 @@ const requiredEnvs = {
     DB_PORT: Joi.number().required(),
     DB_USERNAME: Joi.string().required(),
     DB_PASSWORD: Joi.string().required(),
-    DB_NAME: Joi.string().required()
+    DB_NAME: Joi.string().required(),
+    // REDIS_DB: Joi.number().required(),
+    REDIS_HOST: Joi.string().required(),
+    REDIS_PORT: Joi.number().required(),
+    // REDIS_PASSWORD: Joi.string().required(),
+    // REDIS_PRIFIX: Joi.string().required()
 };
 
 const secretCodeEnv = {
-    JWT_SECRET_KEY: Joi.string().required(),
+    JWT_ACCESS_KEY: Joi.string().required(),
+    JWT_REFRESH_KEY: Joi.string().required(),
 }
 
 const optionsEnvs = {

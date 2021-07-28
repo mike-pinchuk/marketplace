@@ -5,6 +5,8 @@ import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { typedEnv } from './utils/type-env';
 import { AuthModule } from './auth/auth.module';
+import { RedisDBModule } from './redis/redis.module';
+
 
 @Module({
   imports: [TypeOrmModule.forRoot({
@@ -17,7 +19,7 @@ import { AuthModule } from './auth/auth.module';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
-    AuthModule, UserModule],
+    AuthModule, UserModule, RedisDBModule],
   controllers: [AppController],
   providers: [AppService],
 })
