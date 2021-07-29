@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { User } from '../user/user.entity';
+import { UserEntity } from '../user/user.entity';
 
 export interface AuthorizedRequest extends Request {
     user: { id: number }
@@ -7,6 +7,6 @@ export interface AuthorizedRequest extends Request {
 }
 
 export interface RequestWithUser extends Request {
-    user: User;
+    user: UserEntity;
 }
 
