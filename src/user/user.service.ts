@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './user.entity';
+import { UserEntity } from './user.entity';
 import { Repository } from 'typeorm';
 import { hashGenerator } from '../utils/index';
 import { Role } from './user.entity';
@@ -9,13 +9,13 @@ import { RedisService } from 'src/redis/redis.service';
 
 @Injectable()
 export class UserService {
-    constructor(@InjectRepository(User) private userRepository: Repository<User>, private readonly redisService: RedisService) { }
+    constructor(@InjectRepository(UserEntity) private userRepository: Repository<UserEntity>, private readonly redisService: RedisService) { }
 
     async createUser(name: string, email: string, password: string, phoneNumber: string, role: Role) {
         return this.userRepository.save({ name, email, passwordHash: hashGenerator(password), phoneNumber, role })
     }
 
-    async getUserById(id: number): Promise<User | string | undefined> {
+    async getUserById(id: number): Promise<UserEntity | string | undefined> {
         const user = this.userRepository.findOne(id);
         if (await user === undefined) {
             return `User with id ${id} is not existed`
@@ -36,7 +36,7 @@ export class UserService {
         return this.userRepository.update({ id }, body)
     }
 
-    async findByEmailWithHideField(email: string): Promise<User | undefined> {
+    async findByEmailWithHideField(email: string): Promise<UserEntity | undefined> {
         const result = await this.userRepository.createQueryBuilder('user')
           .select()
           .addSelect('user.passwordHash')
