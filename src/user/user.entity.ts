@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, BaseEntity } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, BaseEntity, OneToMany, JoinColumn, ManyToMany, JoinTable } from "typeorm";
 import { Exclude } from 'class-transformer';
+import { AdEntity } from '../advertisment/advertisment.entity';
 
 
 export enum Role {
@@ -9,7 +10,7 @@ export enum Role {
 }
 
 @Entity('user')
-export class User extends BaseEntity {
+export class UserEntity extends BaseEntity {
     @PrimaryGeneratedColumn()
     id!: number;
 
@@ -38,4 +39,11 @@ export class User extends BaseEntity {
     @UpdateDateColumn({ name: 'updated_at' })
     updatedAt!: Date;
 
+    @OneToMany(() => AdEntity, ad => ad.user)
+    @JoinColumn({name: 'id'})
+    ad?: AdEntity[] 
+
+    @ManyToMany(() => AdEntity, (ad: AdEntity) => ad.user_many)
+    @JoinTable({name: 'purchase'})
+    ad_many?: AdEntity[];
 }
