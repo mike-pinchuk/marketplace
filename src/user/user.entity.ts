@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, BaseEntity, OneToMany, JoinColumn, ManyToMany, JoinTable } from "typeorm";
 import { Exclude } from 'class-transformer';
 import { AdEntity } from '../advertisment/advertisment.entity';
+import { MessageEntity } from "src/message/message.entity";
 
 
 export enum Role {
@@ -46,4 +47,7 @@ export class UserEntity extends BaseEntity {
     @ManyToMany(() => AdEntity, (ad: AdEntity) => ad.user_many)
     @JoinTable({name: 'purchase'})
     ad_many?: AdEntity[];
+
+    @ManyToMany(() => MessageEntity, (message: MessageEntity) => message.user_message)
+    message?: MessageEntity[];
 }
