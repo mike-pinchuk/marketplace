@@ -6,6 +6,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { typedEnv } from './utils/type-env';
 import { AuthModule } from './auth/auth.module';
 import { RedisDBModule } from './redis/redis.module';
+import { AdvertismentModule } from './advertisment/advertisment.module';
+import { PhotoModule } from './photo/photo.module';
+import { PurchaseModule } from './purchase/purchase.module';
 
 
 @Module({
@@ -19,7 +22,7 @@ import { RedisDBModule } from './redis/redis.module';
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       synchronize: true,
     }),
-    AuthModule, UserModule, RedisDBModule],
+    AuthModule, UserModule, RedisDBModule, AdvertismentModule, PhotoModule, PurchaseModule],
   controllers: [AppController],
   providers: [AppService],
 })
