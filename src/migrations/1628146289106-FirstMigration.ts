@@ -1,0 +1,79 @@
+import { MigrationInterface, QueryRunner } from "typeorm";
+
+export class FirstMigration1628146289106 implements MigrationInterface {
+
+    public async up(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`CREATE TABLE IF NOT EXISTS photo (
+            id SERIAL PRIMARY KEY,
+            photo VARCHAR(50) NOT NULL,
+            created_at TIMESTAMP DEFAULT now() NOT NULL,
+            updated_at TIMESTAMP DEFAULT now() NOT NULL
+        );`);
+        
+        await queryRunner.query(`CREATE TABLE IF NOT EXISTS ad (
+            id SERIAL PRIMARY KEY,
+            title VARCHAR(50) NOT NULL,
+            decription TEXT NOT NULL,
+            price INTEGER NOT NULL,
+            photo_id INTEGER,
+            created_at TIMESTAMP DEFAULT now() NOT NULL,
+            updated_at TIMESTAMP DEFAULT now() NOT NULL,
+            FOREIGN KEY(photo_id) REFERENCES photo(id)
+        );`);
+
+        await queryRunner.query(`CREATE TABLE IF NOT EXISTS public.user (
+            id SERIAL PRIMARY KEY,
+            name VARCHAR(50) NOT NULL,
+            email VARCHAR(50) NOT NULL,
+            password_hash VARCHAR(50) NOT NULL,
+            phone_number VARCHAR(15) NOT NULL,
+            role VARCHAR(50) DEFAULT 'registeredUser' NOT NULL,
+            ad_id INTEGER,
+            created_at TIMESTAMP DEFAULT now() NOT NULL,
+            updated_at TIMESTAMP DEFAULT now() NOT NULL,
+            FOREIGN KEY(ad_id) REFERENCES ad(id),
+            UNIQUE(email),
+            UNIQUE(phone_number)
+        );`);
+
+        await queryRunner.query(`CREATE TABLE IF NOT EXISTS purchase (
+            id SERIAL PRIMARY KEY,
+            ad_id INTEGER NOT NULL,
+            user_id INTEGER NOT NULL,
+            created_at TIMESTAMP DEFAULT now() NOT NULL,
+            updated_at TIMESTAMP DEFAULT now() NOT NULL,
+            FOREIGN KEY(ad_id) REFERENCES ad(id),
+            FOREIGN KEY(user_id) REFERENCES public.user(id)
+        )`);
+
+        await queryRunner.query(`CREATE TABLE IF NOT EXISTS message (
+            id SERIAL PRIMARY KEY,
+            user_id INTEGER NOT NULL,
+            content TEXT NOT NULL,
+            created_at TIMESTAMP DEFAULT now() NOT NULL,
+            updated_at TIMESTAMP DEFAULT now() NOT NULL,
+            FOREIGN KEY(user_id) REFERENCES public.user(id)
+        );`);
+        
+        await queryRunner.query(`CREATE TABLE IF NOT EXISTS room (
+            id SERIAL PRIMARY KEY,
+            user_id INTEGER NOT NULL,
+            message_id INTEGER NOT NULL,
+            created_at TIMESTAMP DEFAULT now() NOT NULL,
+            updated_at TIMESTAMP DEFAULT now() NOT NULL,
+            FOREIGN KEY(user_id) REFERENCES public.user(id),
+            FOREIGN KEY(message_id) REFERENCES message(id)
+        );`)
+
+    }
+
+    public async down(queryRunner: QueryRunner): Promise<void> {
+        await queryRunner.query(`DROP TABLE room;`)
+        await queryRunner.query(`DROP TABLE message`);
+        await queryRunner.query(`DROP TABLE purchase`)
+        await queryRunner.query(`DROP TABLE user;`);
+        await queryRunner.query(`DROP TABLE ad;`)
+        await queryRunner.query(`DROP TABLE photo;`)
+    }
+
+}
