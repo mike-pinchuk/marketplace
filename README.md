@@ -28,7 +28,11 @@ REDIS_PORT=
 #### Run the Docker
 
 ```bash
-$ docker-compose up -d mydb
+$ docker-compose up -d mydb redis
+```
+Additionaly you might run redis gui
+```bash
+$ docker-compose up -d redis-commander
 ```
 
 #### Run localy
@@ -41,6 +45,18 @@ $ npm run start:dev
 
 # production mode
 $ npm run start:prod
+```
+
+#### Run migration
+```bash
+# run migration
+$ npm run typeorm:run-migration
+
+#create migration
+$ npm run typeorm:create-migration + NAME_OF_MIGRATION
+
+#revert migration
+$ npm run typeorm:revert-migration
 ```
 
 ## Test

@@ -1,5 +1,5 @@
-import { PhotoEntity } from "src/photo/photo.entity";
-import { BaseEntity, Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { PhotoEntity } from "../photo/photo.entity";
+import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { UserEntity } from '../user/user.entity';
 
 @Entity('ad')
@@ -18,6 +18,12 @@ export class AdEntity extends BaseEntity {
 
     @Column({nullable: false})
     price!: number;
+
+    @CreateDateColumn({ name: 'created_at' })
+    createdAt!: Date;
+
+    @UpdateDateColumn({ name: 'updated_at' })
+    updatedAt!: Date;
 
     @ManyToOne(() => UserEntity, user => user.adId)
     @JoinColumn({name: 'ad_id'})
