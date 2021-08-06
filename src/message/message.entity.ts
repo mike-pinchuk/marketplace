@@ -1,5 +1,6 @@
 import { UserEntity } from "../user/user.entity";
-import { BaseEntity, Column, CreateDateColumn, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { BaseEntity, Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { RoomEntity } from "src/room/room.entity";
 
 @Entity('message')
 export class MessageEntity extends BaseEntity {
@@ -12,13 +13,20 @@ export class MessageEntity extends BaseEntity {
     @Column({type: 'text'})
     content!: string;
 
+    @Column({name: 'room_id'})
+    roomId!: number;
+
     @CreateDateColumn({ name: 'created_at' })
     createdAt!: Date;
 
     @UpdateDateColumn({ name: 'updated_at' })
     updatedAt!: Date;
 
-    @ManyToMany(() => UserEntity, (user: UserEntity) => user.message)
-    @JoinTable({name: 'room'})
-    user_message?: UserEntity[];
+    @ManyToOne(() => UserEntity, user => user.message)
+    @JoinColumn({name: 'id'})
+    user?: UserEntity;
+    
+    @ManyToOne(() => RoomEntity, room => room.messages)
+    @JoinColumn({name: 'id'})
+    room?: RoomEntity;
 }

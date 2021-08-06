@@ -46,32 +46,41 @@ export class FirstMigration1628146289106 implements MigrationInterface {
             FOREIGN KEY(user_id) REFERENCES public.user(id)
         )`);
 
+        await queryRunner.query(`CREATE TABLE IF NOT EXISTS room (
+            id SERIAL PRIMARY KEY,
+            created_at TIMESTAMP DEFAULT now() NOT NULL,
+            updated_at TIMESTAMP DEFAULT now() NOT NULL
+        );`);
+
         await queryRunner.query(`CREATE TABLE IF NOT EXISTS message (
             id SERIAL PRIMARY KEY,
             user_id INTEGER NOT NULL,
             content TEXT NOT NULL,
-            created_at TIMESTAMP DEFAULT now() NOT NULL,
-            updated_at TIMESTAMP DEFAULT now() NOT NULL,
-            FOREIGN KEY(user_id) REFERENCES public.user(id)
-        );`);
-        
-        await queryRunner.query(`CREATE TABLE IF NOT EXISTS room (
-            id SERIAL PRIMARY KEY,
-            user_id INTEGER NOT NULL,
-            message_id INTEGER NOT NULL,
+            room_id INTEGER NOT NULL, 
             created_at TIMESTAMP DEFAULT now() NOT NULL,
             updated_at TIMESTAMP DEFAULT now() NOT NULL,
             FOREIGN KEY(user_id) REFERENCES public.user(id),
-            FOREIGN KEY(message_id) REFERENCES message(id)
+            FOREIGN KEY(room_id) REFERENCES room(id)
+        );`);
+        
+        await queryRunner.query(`CREATE TABLE IF NOT EXISTS room_user (
+            id SERIAL PRIMARY KEY,
+            user_id INTEGER NOT NULL,
+            room_id INTEGER NOT NULL,
+            created_at TIMESTAMP DEFAULT now() NOT NULL,
+            updated_at TIMESTAMP DEFAULT now() NOT NULL,
+            FOREIGN KEY(user_id) REFERENCES public.user(id),
+            FOREIGN KEY(room_id) REFERENCES room(id)
         );`)
 
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`DROP TABLE room;`)
+        await queryRunner.query(`DROP TABLE room_user;`)
         await queryRunner.query(`DROP TABLE message`);
+        await queryRunner.query(`DROP TABLE room;`)
         await queryRunner.query(`DROP TABLE purchase`)
-        await queryRunner.query(`DROP TABLE user;`);
+        await queryRunner.query(`DROP TABLE public.user;`);
         await queryRunner.query(`DROP TABLE ad;`)
         await queryRunner.query(`DROP TABLE photo;`)
     }
