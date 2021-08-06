@@ -1,7 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, BaseEntity, OneToMany, JoinColumn, ManyToMany, JoinTable } from "typeorm";
 import { Exclude } from 'class-transformer';
 import { AdEntity } from '../advertisment/advertisment.entity';
-import { MessageEntity } from "src/message/message.entity";
+import { MessageEntity } from "../message/message.entity";
+import { RoomEntity } from "src/room/room.entity";
 
 
 export enum Role {
@@ -44,10 +45,15 @@ export class UserEntity extends BaseEntity {
     @JoinColumn({name: 'id'})
     ad?: AdEntity[] 
 
+    @OneToMany(() => MessageEntity, message => message.user)
+    @JoinColumn({name: 'user_id'})
+    message?: MessageEntity[];
+
     @ManyToMany(() => AdEntity, (ad: AdEntity) => ad.user_many)
     @JoinTable({name: 'purchase'})
     ad_many?: AdEntity[];
 
-    @ManyToMany(() => MessageEntity, (message: MessageEntity) => message.user_message)
-    message?: MessageEntity[];
+    @ManyToMany(() => RoomEntity, (room: RoomEntity) => room.user_many)
+    @JoinTable({name: 'room_user'})
+    room_many?: RoomEntity[];
 }

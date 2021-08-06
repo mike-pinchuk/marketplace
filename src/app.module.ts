@@ -10,6 +10,7 @@ import { PhotoModule } from './photo/photo.module';
 import { PurchaseModule } from './purchase/purchase.module';
 import { MessageModule } from './message/message.module';
 import { ConfigModule, ConfigService } from 'nestjs-config';
+import { RoomModule } from './room/room.module';
 import * as path from 'path';
 
 @Module({
@@ -19,7 +20,7 @@ import * as path from 'path';
       useFactory: (config: ConfigService) => config.get('database'),
       inject: [ConfigService]
     }),
-    AuthModule, UserModule, RedisDBModule, AdvertismentModule, PhotoModule, PurchaseModule, MessageModule],
+    AuthModule, UserModule, RedisDBModule, AdvertismentModule, PhotoModule, PurchaseModule, MessageModule, RoomModule],
   controllers: [AppController],
   providers: [AppService],
 })
