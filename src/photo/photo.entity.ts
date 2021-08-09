@@ -6,6 +6,9 @@ export class PhotoEntity extends BaseEntity {
     @PrimaryGeneratedColumn()
     id!: number;    
 
+    @Column({name: 'ad_id', nullable: false})
+    adId!: number;
+
     @Column({ nullable: false})
     photo!: string;
 
@@ -16,6 +19,6 @@ export class PhotoEntity extends BaseEntity {
     updatedAt!: Date;
 
     @ManyToOne(() => AdEntity, user => user.photo)
-    @JoinColumn({name: 'photo_id'})
-    ad?: AdEntity[]
+    @JoinColumn({name: 'id'})
+    ad?: AdEntity[];
 }
