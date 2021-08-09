@@ -5,6 +5,7 @@ export class FirstMigration1628146289106 implements MigrationInterface {
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`CREATE TABLE IF NOT EXISTS photo (
             id SERIAL PRIMARY KEY,
+            ad_id INTEGER NOT NULL,
             photo VARCHAR(50) NOT NULL,
             created_at TIMESTAMP DEFAULT now() NOT NULL,
             updated_at TIMESTAMP DEFAULT now() NOT NULL
@@ -15,11 +16,12 @@ export class FirstMigration1628146289106 implements MigrationInterface {
             title VARCHAR(50) NOT NULL,
             decription TEXT NOT NULL,
             price INTEGER NOT NULL,
-            photo_id INTEGER,
+            user_id INTEGER NOT NULL,
             created_at TIMESTAMP DEFAULT now() NOT NULL,
-            updated_at TIMESTAMP DEFAULT now() NOT NULL,
-            FOREIGN KEY(photo_id) REFERENCES photo(id)
+            updated_at TIMESTAMP DEFAULT now() NOT NULL
         );`);
+
+        await queryRunner.query(`ALTER TABLE photo ADD CONSTRAINT fk_ad FOREIGN KEY(ad_id) REFERENCES ad(id)`)    
 
         await queryRunner.query(`CREATE TABLE IF NOT EXISTS public.user (
             id SERIAL PRIMARY KEY,
@@ -28,13 +30,13 @@ export class FirstMigration1628146289106 implements MigrationInterface {
             password_hash VARCHAR(50) NOT NULL,
             phone_number VARCHAR(15) NOT NULL,
             role VARCHAR(50) DEFAULT 'registeredUser' NOT NULL,
-            ad_id INTEGER,
             created_at TIMESTAMP DEFAULT now() NOT NULL,
             updated_at TIMESTAMP DEFAULT now() NOT NULL,
-            FOREIGN KEY(ad_id) REFERENCES ad(id),
             UNIQUE(email),
             UNIQUE(phone_number)
         );`);
+
+        await queryRunner.query(`ALTER TABLE ad ADD CONSTRAINT fk_user FOREIGN KEY(user_id) REFERENCES public.user(id)`)
 
         await queryRunner.query(`CREATE TABLE IF NOT EXISTS purchase (
             id SERIAL PRIMARY KEY,

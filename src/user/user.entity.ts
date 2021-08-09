@@ -32,9 +32,6 @@ export class UserEntity extends BaseEntity {
     @Column({ name: 'role', select: true, nullable: false, type: 'varchar', default: Role.RegisteredUser })
     role!: Role;
 
-    @Column({ name: 'ad_id', nullable: true,})
-    adId?: number;
-
     @CreateDateColumn({ name: 'created_at' })
     createdAt!: Date;
 
@@ -42,7 +39,7 @@ export class UserEntity extends BaseEntity {
     updatedAt!: Date;
 
     @OneToMany(() => AdEntity, ad => ad.user)
-    @JoinColumn({name: 'id'})
+    @JoinColumn({name: 'user_id'})
     ad?: AdEntity[] 
 
     @OneToMany(() => MessageEntity, message => message.user)
