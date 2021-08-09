@@ -15,7 +15,7 @@ export class AdvertismentService {
         return await this.adRepository.findOne(findCriteria, { relations });
     }
 
-    async saveAd(DTO: any) {
-        return await this.adRepository.save(DTO)
+    async saveAd(AdDto: Pick<AdEntity, 'title' | 'description' | 'price' | 'userId'>) {
+        return await this.adRepository.save(AdDto)
     }
 }

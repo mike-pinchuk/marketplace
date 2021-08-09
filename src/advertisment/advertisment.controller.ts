@@ -1,13 +1,12 @@
 import { BadRequestException, Req } from '@nestjs/common';
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { UserService } from '../user/user.service';
 import { AuthorizedRequest } from 'src/utils/types';
 import { AdvertismentService } from './advertisment.service';
 import { CreateUpdateAdDto } from './dto/create-update-advertisment.dto';
 
 @Controller('advertisment')
 export class AdvertismentController {
-    constructor(private readonly adService: AdvertismentService, private readonly userService: UserService) {}
+    constructor(private readonly adService: AdvertismentService) {}
     @Get('/all')
     async getAllAd() {
         try {
@@ -36,8 +35,7 @@ export class AdvertismentController {
             throw new BadRequestException('ADVERTISMENT WITH THIS TITLE EXIST')
         }
 
-        const savedAd = await this.adService.saveAd({...createDto})
-        await this.userService.updateUser(req.user.id, {adId: savedAd.id})
+        const savedAd = await this.adService.saveAd({...createDto, userId: req.user.id})
         return this.adService.getOneAd({id: savedAd.id})
         } catch (error) {
             throw new BadRequestException('SOMETHING WENT WRONG')
