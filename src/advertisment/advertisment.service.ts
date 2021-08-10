@@ -7,7 +7,7 @@ import { AdEntity } from './advertisment.entity';
 export class AdvertismentService {
     constructor(@InjectRepository(AdEntity) private adRepository: Repository<AdEntity> ) {}
     
-    async getAllAd() {
+    async getAllAds() {
         return await this.adRepository.find()
     }
 
@@ -17,5 +17,22 @@ export class AdvertismentService {
 
     async saveAd(AdDto: Pick<AdEntity, 'title' | 'description' | 'price' | 'userId'>) {
         return await this.adRepository.save(AdDto)
+    }
+
+    async updateAd(id: number, ad: Partial<Omit<AdEntity, 'id'>>): Promise<void> {
+        await this.adRepository.update({ id }, ad)
+    }
+
+    async getAllUserAds(findCriteria: Partial<Pick<AdEntity, 'userId'>> = {}, relations = ['user']) {
+        const [items, total] = await this.adRepository.findAndCount({
+            where: findCriteria,
+            relations,
+        });
+
+        return {
+            items,
+            total
+        };
+
     }
 }
