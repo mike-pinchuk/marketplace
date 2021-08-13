@@ -7,5 +7,5 @@ export class CreateUpdateAdDto {
 
    readonly price!: number;
 
-   readonly photoId?: number;
+   readonly userId!: number;
 }

@@ -54,12 +54,12 @@ export class UserService {
         const user = await this.getUserById(userId);
         const redis: string | null = await this.redisService.getTokenFromRedis(userId.toString())
         if(redis === null) {
-            return 'Something goes wrong! You have to login again'
+            return 'WRONG CREDENTIALS'
         }
         if(!refreshTokenFromCookie) {
             return `Credential was wrong`
         }
-        const hashedRefreshTokenFromCookie: string = hashGenerator('1' + refreshTokenFromCookie)
+        const hashedRefreshTokenFromCookie: string = hashGenerator(refreshTokenFromCookie)
         const isRefreshTokenMatching = await crypto.timingSafeEqual(Buffer.from(hashedRefreshTokenFromCookie), Buffer.from(redis))
         
         if(!isRefreshTokenMatching) {
@@ -68,7 +68,4 @@ export class UserService {
         return `Credential was wrong`
     }
 
-    async removeRefreshToken(userId: number) {
-        await this.redisService.setTokenToRedis(userId.toString(), '')
-    }
 }
