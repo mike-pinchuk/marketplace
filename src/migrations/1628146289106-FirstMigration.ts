@@ -29,7 +29,7 @@ export class FirstMigration1628146289106 implements MigrationInterface {
             email VARCHAR(50) NOT NULL,
             password_hash VARCHAR(50) NOT NULL,
             phone_number VARCHAR(15) NOT NULL,
-            role VARCHAR(50) DEFAULT 'registeredUser' NOT NULL,
+            role VARCHAR(15) DEFAULT 'registeredUser' NOT NULL,
             created_at TIMESTAMP DEFAULT now() NOT NULL,
             updated_at TIMESTAMP DEFAULT now() NOT NULL,
             UNIQUE(email),
@@ -82,8 +82,8 @@ export class FirstMigration1628146289106 implements MigrationInterface {
         await queryRunner.query(`DROP TABLE message`);
         await queryRunner.query(`DROP TABLE room;`)
         await queryRunner.query(`DROP TABLE purchase`)
-        await queryRunner.query(`DROP TABLE public.user;`);
-        await queryRunner.query(`DROP TABLE ad;`)
+        await queryRunner.query(`DROP TABLE public.user CASCADE;`);
+        await queryRunner.query(`DROP TABLE ad CASCADE;`)
         await queryRunner.query(`DROP TABLE photo;`)
     }
 

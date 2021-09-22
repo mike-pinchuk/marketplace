@@ -1,11 +1,10 @@
-import { Param } from '@nestjs/common';
-import { Patch } from '@nestjs/common';
-import { BadRequestException, Req } from '@nestjs/common';
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Patch, Param, BadRequestException, Req, UseGuards } from '@nestjs/common';
 import { UserService } from 'src/user/user.service';
 import { AuthorizedRequest } from 'src/utils/types';
 import { AdvertismentService } from './advertisment.service';
-import { CreateUpdateAdDto } from './dto/create-update-advertisment.dto';
+import { CreateAdDto } from './dto/create-advertisment.dto';
+import { UpdateAdDto } from './dto/update-advertisment.dto';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('advertisment')
 export class AdvertismentController {
@@ -32,55 +31,32 @@ export class AdvertismentController {
 
     @Get('/user/:id')
     async findAllUserAds(@Param('id') userId: number) {
-        try {
-            const user = await this.userService.getUserById(userId)
-            if (!user) {
-                throw new BadRequestException('INVALID USER ID')
-            }
-            return this.adService.getAllUserAds({ userId }, [])
-        } catch (error) {
-            throw new BadRequestException('SOMETHING WENT WRONG');
+        const user = await this.userService.getUserById(userId)
+        if (!user) {
+            throw new BadRequestException('INVALID USER ID')
         }
-
-
-
+        return this.adService.getAllUserAds({ userId }, [])
     }
 
+    @UseGuards(JwtAuthGuard)
     @Patch(':id')
-    async updateAd(@Param('id') id: number, @Body() updateDto: CreateUpdateAdDto) {
-        try {
-            const ad = await this.adService.getOneAd({ id });
-            if (!ad) {
-                throw new BadRequestException('AD NOT FOUND')
-            }
-            if ('title' in updateDto) {
-                const adTitle = await this.adService.getOneAd({ title: updateDto.title })
-                if (adTitle) {
-                    throw new BadRequestException('POST WITH THIS TITLE EXIST')
-                }
-            }
-            await this.adService.updateAd(id, updateDto);
-            return this.adService.getOneAd({ id })
-        } catch (error) {
-            throw new BadRequestException('SOMETHING WENT WRONG WHILE UPDATING AD')
+    async updateAd(@Param('id') id: number, @Body() updateDto: UpdateAdDto) {
+        const ad = await this.adService.getOneAd({ id });
+        if (!ad) {
+            throw new BadRequestException('AD NOT FOUND')
         }
+        await this.adService.updateAd(id, updateDto);
+        return this.adService.getOneAd({ id })
     }
 
+    @UseGuards(JwtAuthGuard)
     @Post()
-    async createNewAd(@Body() createDto: CreateUpdateAdDto, @Req() req: AuthorizedRequest) {
-        try {
-            const ad = await this.adService.getOneAd({ title: createDto.title })
-            if (ad) {
-                throw new BadRequestException('ADVERTISMENT WITH THIS TITLE EXIST')
-            }
-
-            const savedAd = await this.adService.saveAd({ ...createDto, userId: req.user.id })
-            return this.adService.getOneAd({ id: savedAd.id })
-        } catch (error) {
-            throw new BadRequestException('SOMETHING WENT WRONG')
+    async createNewAd(@Body() createDto: CreateAdDto, @Req() req: AuthorizedRequest) {
+        const ad = await this.adService.getOneAd({ title: createDto.title })
+        if (ad) {
+            throw new BadRequestException('ADVERTISMENT WITH THIS TITLE EXIST')
         }
-
+        const savedAd = await this.adService.saveAd({ ...createDto, userId: req.user.id })
+        return this.adService.getOneAd({ id: savedAd.id })
     }
-
-
 }
