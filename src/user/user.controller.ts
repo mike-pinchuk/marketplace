@@ -1,5 +1,5 @@
 import { Body, Controller, UseGuards, NotFoundException, Get, Delete, Patch, Param, Request } from '@nestjs/common';
-import { CreateAuthUserDto } from '../auth/dto/auth-user.dto';
+import { UserUpdatesDto } from './dto/user-updates.dto';
 import { UserService } from './user.service';
 import { AuthorizedRequest } from '../utils/types';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -41,7 +41,7 @@ export class UserController {
     }
 
     @Patch(':id')
-    async updateUser(@Param('id') id: number, @Body() body: CreateAuthUserDto) {
+    async updateUser(@Param('id') id: number, @Body() body: UserUpdatesDto) {
         try {
             return this.userService.updateUser(id, body)
         } catch (error) {
